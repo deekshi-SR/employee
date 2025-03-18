@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dcca44c7-9388-4302-aea1-bde08511defe" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="5d1f9b59-38aa-423c-94f2-09a00cad0497" >
+		<db:mssql-connection host="localhost" port="1433" user="Deekshitha" password="HeL@)A2*grv9Y" databaseName="emp_records" />
+	</db:config>
+	<flow name="employeeFlow" doc:id="e681439d-396b-454a-b836-85a8986c0bcc" >
+		<http:listener doc:name="Listener" doc:id="ecad3958-d830-4f83-8908-01367c71acf3" config-ref="HTTP_Listener_config" path="/employees"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3f7fa749-9c1a-4015-a39e-27133fc1e0a3" message="started the flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="d9238d63-334a-47c4-a41a-eedc005d3ba2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+		"id": 1,
+		"employee_name": "Tiger Nixon",
+		"employee_salary": 320800,
+		"employee_age": 61,
+		"profile_image": ""
+	},{
+		"id": 2,
+		"employee_name": "Garrett Winters",
+		"employee_salary": 170750,
+		"employee_age": 63,
+		"profile_image": ""
+	},{
+		"id": 3,
+		"employee_name": "Ashton Cox",
+		"employee_salary": 86000,
+		"employee_age": 66,
+		"profile_image": ""
+	},{
+		"id": 4,
+		"employee_name": "Cedric Kelly",
+		"employee_salary": 433060,
+		"employee_age": 22,
+		"profile_image": ""
+	},{
+		"id": 5,
+		"employee_name": "Airi Satou",
+		"employee_salary": 162700,
+		"employee_age": 33,
+		"profile_image": ""
+	},{
+		"id": 6,
+		"employee_name": "Brielle Williamson",
+		"employee_salary": 372000,
+		"employee_age": 61,
+		"profile_image": ""
+	},{
+		"id": 7,
+		"employee_name": "Herrod Chandler",
+		"employee_salary": 137500,
+		"employee_age": 59,
+		"profile_image": ""
+	},{
+		"id": 8,
+		"employee_name": "Rhona Davidson",
+		"employee_salary": 327900,
+		"employee_age": 55,
+		"profile_image": ""
+	},{
+		"id": 9,
+		"employee_name": "Colleen Hurst",
+		"employee_salary": 205500,
+		"employee_age": 39,
+		"profile_image": ""
+	},{
+		"id": 10,
+		"employee_name": "Sonya Frost",
+		"employee_salary": 103600,
+		"employee_age": 23,
+		"profile_image": ""
+	},{
+		"id": 11,
+		"employee_name": "Jena Gaines",
+		"employee_salary": 90560,
+		"employee_age": 30,
+		"profile_image": ""
+	},{
+		"id": 12,
+		"employee_name": "Quinn Flynn",
+		"employee_salary": 342000,
+		"employee_age": 22,
+		"profile_image": ""
+	},{
+		"id": 13,
+		"employee_name": "Charde Marshall",
+		"employee_salary": 470600,
+		"employee_age": 36,
+		"profile_image": ""
+	},{
+		"id": 14,
+		"employee_name": "Haley Kennedy",
+		"employee_salary": 313500,
+		"employee_age": 43,
+		"profile_image": ""
+	},{
+		"id": 15,
+		"employee_name": "Tatyana Fitzpatrick",
+		"employee_salary": 385750,
+		"employee_age": 19,
+		"profile_image": ""
+	},{
+		"id": 16,
+		"employee_name": "Michael Silva",
+		"employee_salary": 198500,
+		"employee_age": 66,
+		"profile_image": ""
+	},{
+		"id": 17,
+		"employee_name": "Paul Byrd",
+		"employee_salary": 725000,
+		"employee_age": 64,
+		"profile_image": ""
+	},{
+		"id": 18,
+		"employee_name": "Gloria Little",
+		"employee_salary": 237500,
+		"employee_age": 59,
+		"profile_image": ""
+	},{
+		"id": 19,
+		"employee_name": "Bradley Greer",
+		"employee_salary": 132000,
+		"employee_age": 41,
+		"profile_image": ""
+	},{
+		"id": 20,
+		"employee_name": "Dai Rios",
+		"employee_salary": 217500,
+		"employee_age": 35,
+		"profile_image": ""
+	},{
+		"id": 21,
+		"employee_name": "Jenette Caldwell",
+		"employee_salary": 345000,
+		"employee_age": 30,
+		"profile_image": ""
+	},{
+		"id": 22,
+		"employee_name": "Yuri Berry",
+		"employee_salary": 675000,
+		"employee_age": 40,
+		"profile_image": ""
+	},{
+		"id": 23,
+		"employee_name": "Caesar Vance",
+		"employee_salary": 106450,
+		"employee_age": 21,
+		"profile_image": ""
+	},{
+		"id": 24,
+		"employee_name": "Doris Wilder",
+		"employee_salary": 85600,
+		"employee_age": 23,
+		"profile_image": ""
+	}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="employeeFlow1" doc:id="ef904163-13d4-47e5-b0ec-a7f0cd56b9f3" >
+		<http:listener doc:name="Listener" doc:id="1cf4f346-3138-48f1-be33-306897dcd5e6" config-ref="HTTP_Listener_config" path="/employees/{id}"/>
+		<logger level="INFO" doc:name="start log" doc:id="9273d82f-0bad-43c3-b529-10e4f5d815b0" message="started flow1"/>
+		<ee:transform doc:name="set payload" doc:id="245a5b91-415b-4362-a86f-28e2935ec7ff" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[
+	{
+		"id": 1,
+		"employee_name": "Tiger Nixon",
+		"employee_salary": 320800,
+		"employee_age": 61,
+		"profile_image": ""
+	},{
+		"id": 2,
+		"employee_name": "Garrett Winters",
+		"employee_salary": 170750,
+		"employee_age": 63,
+		"profile_image": ""
+	},{
+		"id": 3,
+		"employee_name": "Ashton Cox",
+		"employee_salary": 86000,
+		"employee_age": 66,
+		"profile_image": ""
+	},{
+		"id": 4,
+		"employee_name": "Cedric Kelly",
+		"employee_salary": 433060,
+		"employee_age": 22,
+		"profile_image": ""
+	},{
+		"id": 5,
+		"employee_name": "Airi Satou",
+		"employee_salary": 162700,
+		"employee_age": 33,
+		"profile_image": ""
+	},{
+		"id": 6,
+		"employee_name": "Brielle Williamson",
+		"employee_salary": 372000,
+		"employee_age": 61,
+		"profile_image": ""
+	},{
+		"id": 7,
+		"employee_name": "Herrod Chandler",
+		"employee_salary": 137500,
+		"employee_age": 59,
+		"profile_image": ""
+	},{
+		"id": 8,
+		"employee_name": "Rhona Davidson",
+		"employee_salary": 327900,
+		"employee_age": 55,
+		"profile_image": ""
+	},{
+		"id": 9,
+		"employee_name": "Colleen Hurst",
+		"employee_salary": 205500,
+		"employee_age": 39,
+		"profile_image": ""
+	},{
+		"id": 10,
+		"employee_name": "Sonya Frost",
+		"employee_salary": 103600,
+		"employee_age": 23,
+		"profile_image": ""
+	},{
+		"id": 11,
+		"employee_name": "Jena Gaines",
+		"employee_salary": 90560,
+		"employee_age": 30,
+		"profile_image": ""
+	},{
+		"id": 12,
+		"employee_name": "Quinn Flynn",
+		"employee_salary": 342000,
+		"employee_age": 22,
+		"profile_image": ""
+	},{
+		"id": 13,
+		"employee_name": "Charde Marshall",
+		"employee_salary": 470600,
+		"employee_age": 36,
+		"profile_image": ""
+	},{
+		"id": 14,
+		"employee_name": "Haley Kennedy",
+		"employee_salary": 313500,
+		"employee_age": 43,
+		"profile_image": ""
+	},{
+		"id": 15,
+		"employee_name": "Tatyana Fitzpatrick",
+		"employee_salary": 385750,
+		"employee_age": 19,
+		"profile_image": ""
+	},{
+		"id": 16,
+		"employee_name": "Michael Silva",
+		"employee_salary": 198500,
+		"employee_age": 66,
+		"profile_image": ""
+	},{
+		"id": 17,
+		"employee_name": "Paul Byrd",
+		"employee_salary": 725000,
+		"employee_age": 64,
+		"profile_image": ""
+	},{
+		"id": 18,
+		"employee_name": "Gloria Little",
+		"employee_salary": 237500,
+		"employee_age": 59,
+		"profile_image": ""
+	},{
+		"id": 19,
+		"employee_name": "Bradley Greer",
+		"employee_salary": 132000,
+		"employee_age": 41,
+		"profile_image": ""
+	},{
+		"id": 20,
+		"employee_name": "Dai Rios",
+		"employee_salary": 217500,
+		"employee_age": 35,
+		"profile_image": ""
+	},{
+		"id": 21,
+		"employee_name": "Jenette Caldwell",
+		"employee_salary": 345000,
+		"employee_age": 30,
+		"profile_image": ""
+	},{
+		"id": 22,
+		"employee_name": "Yuri Berry",
+		"employee_salary": 675000,
+		"employee_age": 40,
+		"profile_image": ""
+	},{
+		"id": 23,
+		"employee_name": "Caesar Vance",
+		"employee_salary": 106450,
+		"employee_age": 21,
+		"profile_image": ""
+	},{
+		"id": 24,
+		"employee_name": "Doris Wilder",
+		"employee_salary": 85600,
+		"employee_age": 23,
+		"profile_image": ""
+	}]]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="employee" ><![CDATA[%dw 2.0
+output application/json
+---
+[
+  {
+    "id": 1,
+    "employee_name": "Tiger Nixon",
+    "employee_salary": 320800,
+    "employee_age": 61,
+    "profile_image": ""
+  },
+  {
+    "id": 2,
+    "employee_name": "Garrett Winters",
+    "employee_salary": 170750,
+    "employee_age": 63,
+    "profile_image": ""
+  }
+]
+]]></ee:set-variable>
+				<ee:set-variable variableName="empID" ><![CDATA[attributes.uriParams.id]]></ee:set-variable>
+		
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="8e89d825-5dc9-4b6a-b4e5-1e48d5f26c6e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json 
+---
+(payload filter($.id as String == vars.empID))[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7fc22e58-d9dd-44f5-983f-99ed1d430b28" message="stop"/>
+	</flow>
+</mule>

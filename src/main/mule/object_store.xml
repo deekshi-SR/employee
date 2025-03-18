@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="0d7b6c7b-e868-4dcc-b949-5fb238fea946" />
+	<flow name="object_storeFlow" doc:id="584d46fa-d560-4adc-b3b0-6123afa90f35" >
+		<http:listener doc:name="Listener" doc:id="8f0122ba-2cb4-438c-bcbd-049dd4e14724" config-ref="HTTP_Listener_config" path="/obj"/>
+		<os:store doc:name="Store" doc:id="3924f140-312c-4493-978d-153e98ed189f" key="lookUpData" objectStore="Object_store">
+			<os:value ><![CDATA[#["welcome to data store"]]]></os:value>
+		</os:store>
+	</flow>
+</mule>

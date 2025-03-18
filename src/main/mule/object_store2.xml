@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="object_store2Flow" doc:id="c0e86609-1ec7-4b17-b6a1-ccb9a99dd030" >
+		<http:listener doc:name="Listener" doc:id="4e7e4aa4-37ef-4a89-91e7-8e31edea6ab1" config-ref="HTTP_Listener_config" path="obj2"/>
+		<os:retrieve doc:name="Retrieve" doc:id="9298dcb5-428c-4f8a-a8af-ca7d4e63b0ff" key="lookUpData" objectStore="Object_store">
+			<os:default-value ><![CDATA[""]]></os:default-value>
+		</os:retrieve>
+		<logger level="INFO" doc:name="Logger" doc:id="68e4d6cc-5ba0-48db-b6eb-8c0c3e3119d3" message="retrived completely "/>
+	</flow>
+</mule>
