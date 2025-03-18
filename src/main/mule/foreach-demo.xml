@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="foreach-demoFlow" doc:id="04259b45-d519-433c-aca1-4fcec084b19e" >
+		<http:listener doc:name="Listener" doc:id="ae0fa0d6-5e83-41bd-afbe-d7c5e8d2fbf9" config-ref="HTTP_Listener_config" path="/process-model"/>
+		<logger level="INFO" doc:name=" start Logger" doc:id="06c7e1a1-ccec-4d0f-9e16-16b032eaff80" message="starting flow"/>
+		<try doc:name="Try" doc:id="cd534eed-17d5-44be-bee2-ef44d5b50144" >
+			<scatter-gather doc:name="Scatter-Gather" doc:id="dac24a98-e069-4c22-8850-1e233dace432">
+			<route>
+				<db:select doc:name="Select" doc:id="716109a6-d29f-4f29-a30a-40f7dc2ff5e3" config-ref="Database_Config">
+			<db:sql><![CDATA[select emp_id,emp_name,emp_status from onboard.emp_master]]></db:sql>
+		</db:select>
+			</route>
+			<route>
+				<http:request method="GET" doc:name="Request emp finance api" doc:id="45753e79-f169-4a39-8c7c-e153200411ca" url="https://employee-1aanh1.5sc6y6-2.usa-e2.cloudhub.io/employees" />
+			</route>
+		</scatter-gather>
+		</try>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="b9bffe24-0025-44b8-b17d-ca547cf44d8b" variableName="empDBPayload"/>
+		<ee:transform doc:name="Transform Message" doc:id="259c9d36-c2cf-4dc3-9d7f-ed9e38fbffee" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(payload."1".payload map(financePayload, indexOfFinancePayload) -> {
+	(payload."0".payload filter($.emp_id == financePayload.id) map{
+		"id": $.'emp_id',
+		"name": $.'emp_name',
+		"status": $.'emp_status',
+		"salary": financePayload.'employee_salary',
+		"age": financePayload.'employee_age'
+	})
+}) filter($ !={})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name=" end Logger" doc:id="a2455f5d-da60-43a4-b71f-c3fe184ac6a9" message="flow ended"/>
+	</flow>
+	<flow name="foreach-demoFlow1" doc:id="c931abdb-d946-4ac2-a8ca-46cc3eb22910" >
+		<http:listener doc:name="Listener" doc:id="07f76e19-30d2-47d6-ac8f-8b6c090a64b8" config-ref="HTTP_Listener_config" path="/for-each"/>
+		<logger level="INFO" doc:name="Logger" doc:id="febf2b16-4272-4890-bde0-1d4a1e4edb5d" message="started flow"/>
+		<set-variable value="#[[]]" doc:name="Set Variable" doc:id="042ea68c-c034-489b-9e0d-a7a1a7d9e65a" variableName="employeeList"/>
+		<db:select doc:name="Select" doc:id="64a1a1ba-77c8-42ed-9b08-c031ddae5a73" config-ref="Database_Config">
+			<db:sql ><![CDATA[select emp_id,emp_name,emp_status from onboard.emp_master]]></db:sql>
+		</db:select>
+		<try doc:name="Try" doc:id="9fe01735-1428-400a-9b1f-3ceae8e46506" >
+			<foreach doc:name="For Each" doc:id="ecf0aa75-69d4-45c5-999a-0ce547a39901" collection="#[payload]">
+			<logger level="INFO" doc:name="Logger" doc:id="24e303f8-3ad4-4a26-8e06-41e533efd035" message="#[payload.emp_id]" />
+			<http:request method="GET" doc:name="Request" doc:id="7cc76ddd-ee0b-4469-ac88-c9d03bf8792c" url="https://employee-1aanh1.5sc6y6-2.usa-e2.cloudhub.io/employees/{id}">
+				<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"id" : payload.emp_id
+}]]]></http:uri-params>
+			</http:request>
+			<ee:transform doc:name="Transform Message" doc:id="19cc662c-3c69-4169-854b-c7c87db31891">
+				<ee:message>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="employeeList"><![CDATA[%dw 2.0
+output application/java
+---
+vars.employeeList << {
+	emp_id:payload.id,
+	emp_salary:payload.'employee_salary',
+	emp_age:payload.'employee_age'
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		</try>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="5972c00b-16f0-4da1-a469-ac9f9709aba4" config-ref="Database_Config">
+			<db:bulk-input-parameters ><![CDATA[#[vars.employeeList]]]></db:bulk-input-parameters>
+			<db:sql ><![CDATA[insert into ONBOARD.EMP_FIN_MASTER(EMP_ID,EMP_SALARY,EMP_AGE) values(:emp_id, :emp_salary, :emp_age) ]]></db:sql>
+		</db:bulk-insert>
+		<ee:transform doc:name="Transform Message" doc:id="b64ba11d-598b-4a80-8df6-47f5c41a6932" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status": "290",
+	"message": "success for-each"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b00b9a20-8613-4640-b832-8fa15a432680" message="endedd for-each flow"/>
+	</flow>
+	<flow name="foreach-demoFlow2" doc:id="bbca745e-9fff-46fe-8e0f-b1ca203284bc" >
+		<file:listener doc:name="On New or Updated File" doc:id="15d97149-ba03-4cdc-85d1-53c43418b1f5" directory="C:\Users\DeekshithaR\OneDrive - Spaulding Ridge, LLC\Desktop\emp" watermarkMode="MODIFIED_TIMESTAMP">
+			<scheduling-strategy >
+				<fixed-frequency timeUnit="HOURS"/>
+			</scheduling-strategy>
+		</file:listener>
+		<batch:job jobName="Batch_Job" doc:id="8f7aaf11-90a2-472f-b930-105b3845d141" blockSize="5">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="c5587e7d-dfaf-4a88-80f9-6afc2e828804">
+					<ee:transform doc:name="Transform Message" doc:id="b7a40467-5564-46bd-8366-94a46c5a570d" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	emp_id: payload[0].'EMP_ID',
+	emp_salary: payload[0].'EMP_SALARY',
+	emp_age: payload[0].'EMP_AGE'
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="15172d9b-36f7-4173-bb35-e64b9b632cb8" size="5">
+						<logger level="INFO" doc:name="Logger" doc:id="6ab65290-32ed-45b3-86d2-e3fe49e3029e" message="step 1 agregattorr *******#[payload]"/>
+						<db:bulk-insert doc:name="Bulk insert" doc:id="6a2d54cc-1cfd-48fa-be69-425a147ebaa3" config-ref="Database_Config">
+							<db:sql><![CDATA[INSERT INTO ONBOARD.EMP_FIN_MASTER (EMP_ID, EMP_SALARY, EMP_AGE) 
+VALUES (:emp_id, :emp_salary, :emp_age)
+]]></db:sql>
+					</db:bulk-insert>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+</mule>
