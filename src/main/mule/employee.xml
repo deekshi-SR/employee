@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	</db:config>
 	<flow name="employeeFlow" doc:id="e681439d-396b-454a-b836-85a8986c0bcc" >
 		<http:listener doc:name="Listener" doc:id="ecad3958-d830-4f83-8908-01367c71acf3" config-ref="HTTP_Listener_config" path="/employees"/>
-		<logger level="INFO" doc:name="Logger" doc:id="3f7fa749-9c1a-4015-a39e-27133fc1e0a3" message="started the flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3f7fa749-9c1a-4015-a39e-27133fc1e0a3" message="started the flow and successfully running"/>
 		<ee:transform doc:name="Transform Message" doc:id="d9238d63-334a-47c4-a41a-eedc005d3ba2" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
