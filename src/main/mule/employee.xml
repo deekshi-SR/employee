@@ -357,6 +357,6 @@ output application/json
 (payload filter($.id as String == vars.empID))[0]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="7fc22e58-d9dd-44f5-983f-99ed1d430b28" message="stop"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7fc22e58-d9dd-44f5-983f-99ed1d430b28" message="stop the process"/>
 	</flow>
 </mule>
